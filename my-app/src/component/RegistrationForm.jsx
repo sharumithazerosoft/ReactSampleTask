@@ -12,6 +12,9 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
     confirmPassword: ''
   });
 
+  const [message, setMessage] = useState("");       // <-- New state for message
+  const [messageType, setMessageType] = useState(""); // success or error
+
   useEffect(() => {
     if (editingUser) {
       setFormData({
@@ -30,6 +33,8 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
         confirmPassword: ''
       });
     }
+    setMessage(""); // Clear message when editingUser changes
+    setMessageType("");
   }, [editingUser]);
 
   const handleChange = (e) => {
@@ -41,31 +46,37 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
     const { name, email, mobile, password, confirmPassword } = formData;
 
     if (!name.trim()) {
-      alert('Please enter your full name.');
+      setMessage("Please enter your full name.");
+      setMessageType("error");
       return false;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      alert('Please enter a valid email address.');
+      setMessage("Please enter a valid email address.");
+      setMessageType("error");
       return false;
     }
 
     if (!/^\d{10,15}$/.test(mobile)) {
-      alert('Please enter a valid mobile number (10 to 15 digits).');
+      setMessage("Please enter a valid mobile number (10 to 15 digits).");
+      setMessageType("error");
       return false;
     }
 
     if (!editingUser) {
       if (password.length < 6) {
-        alert('Password should be at least 6 characters.');
+        setMessage("Password should be at least 6 characters.");
+        setMessageType("error");
         return false;
       }
       if (password !== confirmPassword) {
-        alert('Passwords do not match.');
+        setMessage("Passwords do not match.");
+        setMessageType("error");
         return false;
       }
     }
 
+    setMessage(""); 
     return true;
   };
 
@@ -74,8 +85,8 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
     if (!validate()) return;
 
     try {
-       let url = 'https://zerosoft.in/reactsampletask/user-api/register.php'; 
-      //let url = 'http://localhost/Sharumitha/react/user-api/register.php';
+      // let url = 'http://localhost/Sharumitha/react/user-api/register.php';
+     let url='https://zerosoft.in/reactsampletask/user-api/update_user.php';
       let payload = {
         name: formData.name,
         email: formData.email,
@@ -86,8 +97,8 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
         payload.password = formData.password;
       } else {
         payload.id = editingUser.id;
-        //url = 'http://localhost/Sharumitha/react/user-api/update_user.php';
-        url = 'https://zerosoft.in/reactsampletask/user-api/update_user.php';
+       // url = 'http://localhost/Sharumitha/react/user-api/update_user.php';
+         url='https://zerosoft.in/reactsampletask/user-api/update_user.php';
       }
 
       const response = await fetch(url, {
@@ -99,7 +110,9 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
       const result = await response.json();
 
       if (result.status === 'success') {
-        alert(editingUser ? 'User updated successfully!' : 'Registration successful!');
+        setMessage(editingUser ? "User updated successfully!" : "Registration successful!");
+        setMessageType("success");
+
         setFormData({
           name: '',
           email: '',
@@ -108,17 +121,20 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
           confirmPassword: ''
         });
 
-        if (editingUser) setEditingUser(null); 
-        if (onUserUpdated) onUserUpdated(); 
+        if (editingUser) setEditingUser(null);
+        if (onUserUpdated) onUserUpdated();
 
         if (!editingUser) {
-          navigate('/login'); 
+          // Redirect after short delay to show success message
+          setTimeout(() => navigate('/login'), 1000);
         }
       } else {
-        alert('Error: ' + result.message);
+        setMessage("Error: " + result.message);
+        setMessageType("error");
       }
     } catch (error) {
-      alert('Network error: ' + error.message);
+      setMessage("Network error: " + error.message);
+      setMessageType("error");
     }
   };
 
@@ -129,20 +145,27 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
   return (
     <div className="container-fluid login-container">
       <div className="row align-items-center min-vh-100 login-box">
-             
         <div className="col-12 col-lg-6 right-section">
           <div className="login-card bg-white rounded shadow-lg mx-auto">
             <div className="card-body p-4 p-md-5">
               
-              {/* Registration Title */}
               <h2 className="fw-bold mb-2">{editingUser ? 'Update Profile' : 'Register Now!'}</h2>
               <p className="text-muted mb-4">
                 {editingUser ? 'Update your profile details' : 'Create your account to get started'}
               </p>
 
+              {/* Display message on page */}
+              {message && (
+                <div
+                  className={`mb-3 p-2 rounded ${
+                    messageType === "success" ? "success" : "failed"
+                  }`}
+                >
+                  {message}
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} autoComplete="off">
-                
-                {/* Full Name Field */}
                 <div className="mb-3">
                   <label className="form-label fw-semibold">Full Name</label>
                   <input
@@ -156,7 +179,6 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
                   />
                 </div>
 
-                {/* Email Field */}
                 <div className="mb-3">
                   <label className="form-label fw-semibold">Email</label>
                   <input
@@ -170,7 +192,6 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
                   />
                 </div>
 
-                {/* Mobile Number Field */}
                 <div className="mb-3">
                   <label className="form-label fw-semibold">Mobile Number</label>
                   <input
@@ -184,7 +205,6 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
                   />
                 </div>
 
-                {/* Password Field - Only show for new registration */}
                 {!editingUser && (
                   <>
                     <div className="mb-3">
@@ -215,13 +235,11 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
                   </>
                 )}
 
-                {/* Register/Update Button */}
                 <button type="submit" className="btn login-button w-100 py-2 mb-3">
                   {editingUser ? 'Update Profile' : 'Register'}
                 </button>
               </form>
 
-              {/* Links Section */}
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <a href="#" className="text-decoration-none text-muted small">
                   {editingUser ? 'Back to dashboard' : 'Already have an account?'}

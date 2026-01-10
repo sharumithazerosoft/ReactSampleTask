@@ -2,7 +2,8 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import './Header.css';
 const Header = () => {
-  const navigate = useNavigate();
+   const navigate = useNavigate();
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
   return (
     <header className="header">
@@ -73,10 +74,28 @@ const Header = () => {
             <li>
               <Link to="/contact">Contact</Link>
             </li>
-
+            {!isLoggedIn ? (
             <li className="login-btn">
               <Link to="/login">Login</Link>
             </li>
+            ) : (
+            <>
+            {/* <li className="login-btn">
+              <Link to="/dashboard">Dashboard</Link>
+            </li> */}
+            <li>
+            <button
+              className="login-btn"
+              onClick={() => {
+              localStorage.removeItem("isLoggedIn");
+              navigate("/login");
+              }}
+              >
+             Logout
+            </button>
+            </li>
+            </>
+            )}
           </ul>
         </div>
 

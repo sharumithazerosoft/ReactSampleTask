@@ -3,7 +3,20 @@
   display:flex;
   justify-content:center;
 }
-
+.success{
+  border:1px solid green;
+  color:green;
+  text-align: center;
+  box-shadow: 0 0 0 0.2rem rgb(216, 252, 216);
+  background: rgb(216, 252, 216);;
+}
+.failed{
+  border:1px solid red;
+  color:red;
+  text-align: center;
+   box-shadow: 0 0 0 0.2rem rgb(255, 232, 232);
+  background: rgb(255, 232, 232);
+}
 .login-card {
   max-width: 450px;
   width: 100%;

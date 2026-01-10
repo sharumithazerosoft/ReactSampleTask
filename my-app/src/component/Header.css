@@ -127,6 +127,7 @@
     background-color: #91c851;
     color:#ffffff !important;
     border-radius: 10px;
+    border:none;
 }
 .login-btn:hover{
     background-color: #217040;

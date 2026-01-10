@@ -6,6 +6,7 @@ import RegistrationForm from "./component/RegistrationForm";
 import Dashboard from "./component/Dashboard";
 import Header from "./component/Header";
 import Footer from "./component/Footer";
+import ProtectedRoute from "./component/ProtectedRoute";
 import './App.css';
 
 function App() {
@@ -16,7 +17,14 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegistrationForm />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+          }
+        />
       </Routes>
       <Footer/>
     </Router>

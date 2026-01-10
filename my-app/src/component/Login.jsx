@@ -7,29 +7,42 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [message, setMessage] = useState(""); // <-- new state for messages
+  const [messageType, setMessageType] = useState(""); // success or error
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-       const response = await fetch("https://zerosoft.in/reactsampletask/user-api/login.php", {
-      //  const response = await fetch("http://localhost/Sharumitha/react/user-api/login.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+         "https://zerosoft.in/reactsampletask/user-api/login.php",
+        //"http://localhost/Sharumitha/react/user-api/login.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const result = await response.json();
 
       if (result.status === "success") {
-        alert("Login successful!");
-        navigate("/dashboard");
+        setMessage("Login successful!");
+        setMessageType("success");
+        // Save login state
+        localStorage.setItem("isLoggedIn", "true");
+        // Redirect after a short delay
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
       } else {
-        alert("Login failed: " + result.message);
+        setMessage("Login failed: " + result.message);
+        setMessageType("error");
       }
     } catch (error) {
-      alert("Network error: " + error.message);
+      setMessage("Network error: " + error.message);
+      setMessageType("error");
     }
   };
 
@@ -40,18 +53,24 @@ const Login = () => {
   return (
     <div className="container-fluid login-container">
       <div className="row align-items-center min-vh-100 login-box">
-       
         <div className="col-12 col-lg-6 right-section">
           <div className="login-card bg-white rounded shadow-lg mx-auto">
             <div className="card-body p-4 p-md-5">
-              
-              {/* Login Title */}
               <h2 className="fw-bold mb-2">Login Now!</h2>
               <p className="text-muted mb-4">Welcome back! Please enter your details.</p>
 
+              {/* Display message on page */}
+              {message && (
+                <div
+                  className={`mb-3 p-2 rounded ${
+                    messageType === "success" ? "success text-green" : "failed text-red"
+                  }`}
+                >
+                  {message}
+                </div>
+              )}
+
               <form onSubmit={handleSubmit}>
-                
-                {/* Email Field */}
                 <div className="mb-3">
                   <label className="form-label fw-semibold">Email</label>
                   <input
@@ -64,7 +83,6 @@ const Login = () => {
                   />
                 </div>
 
-                {/* Password Field */}
                 <div className="mb-3">
                   <label className="form-label fw-semibold">Password</label>
                   <input
@@ -77,7 +95,6 @@ const Login = () => {
                   />
                 </div>
 
-                {/* Remember Me */}
                 <div className="mb-3">
                   <div className="form-check">
                     <input
@@ -93,18 +110,16 @@ const Login = () => {
                   </div>
                 </div>
 
-                {/* Login Button */}
                 <button type="submit" className="btn login-button w-100 py-2 mb-3">
                   Login 
                 </button>
               </form>
 
-              {/* Links Section */}
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <a href="#" className="text-decoration-none text-muted small">
                   Forgot your username?
                 </a>
-                <span 
+                <span
                   className="text-primary text-decoration-none fw-semibold small"
                   style={{ cursor: "pointer" }}
                   onClick={goToRegister}
@@ -117,7 +132,6 @@ const Login = () => {
           </div>
         </div>
       </div>
-
     </div>
   );
 };
