@@ -8,8 +8,11 @@ import Header from "./component/Header";
 import Footer from "./component/Footer";
 import ProtectedRoute from "./component/ProtectedRoute";
 import About from "./component/About";
+import Services from "./component/Services";
+import Gallery from "./component/Gallery";
 import Contact from "./component/Contact";
 import './App.css';
+
 
 function App() {
   return (
@@ -21,6 +24,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegistrationForm />} />
         <Route path="/about" element={<About />} />
+        <Route path="/service" element={<Services />} />
+        <Route path="/gallery" element={<Gallery />} />
         <Route path="/contact" element={<Contact />} />
 
         <Route

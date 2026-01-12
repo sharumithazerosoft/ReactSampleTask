@@ -2,3 +2,72 @@
     text-align: center;
     margin: 50px auto;
 }
+.About-section .about-text {
+  text-align: left !important;
+}
+.About-section .about-text p{
+  text-align: justify !important;
+}
+.read-more{
+    color: #91c851;
+    text-decoration: none;
+}
+.read-more:hover{
+    color:#217040;
+}
+.section-title{
+  font-size: 32px;
+    margin-bottom: 15px;
+    color: #91c851;
+    font-weight: 700 !important;
+}
+
+/* service */
+
+.service {
+    background-image: url('/images/s2.jpg');
+    color: #FFFFFF;
+    position: relative;
+    line-height: 25px;
+}
+
+.service .color {
+    background-color: #17722eb0;
+    padding: 50px 0;
+    text-align: center;
+}
+
+.service h1 {
+    font-family: "Roboto", sans-serif;
+    font-size: 36px;
+    font-weight: bold;
+    padding-bottom: 5px;
+}
+
+.service .more,.service-text .more {
+       background-color: #91c851;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+}
+
+.service .more:hover ,.service-text .more:hover{
+    background-color: #217040;
+}
+
+.service p {
+    font-size: 14px;
+}
+
+.service .para {
+    padding-top: 20px;
+}
+
+.service-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

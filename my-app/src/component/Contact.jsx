@@ -92,18 +92,7 @@ const Contact = () => {
       <section className="contact-section wrapper">
         <div className="contact-container">
 
-          <div className="contact-map">
-            <iframe
-              src="https://www.google.com/maps?q=12/A,+Romania+City+New+World+Journey,+UK&output=embed"
-              width="100%"
-              height="400"
-              style={{ border: 0, borderRadius: "10px" }}
-              allowFullScreen
-              loading="lazy"
-              title="Google Map"
-            />
-          </div>
-
+         
           <div className="contact-form">
             <h2>Send Us a Message</h2>
 
@@ -159,6 +148,17 @@ const Contact = () => {
                 </p>
               )}
             </form>
+          </div>
+ <div className="contact-map">
+            <iframe
+              src="https://www.google.com/maps?q=12/A,+Romania+City+New+World+Journey,+UK&output=embed"
+              width="100%"
+              height="400"
+              style={{ border: 0, borderRadius: "10px" }}
+              allowFullScreen
+              loading="lazy"
+              title="Google Map"
+            />
           </div>
 
         </div>

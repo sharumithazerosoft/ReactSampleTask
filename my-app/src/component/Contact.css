@@ -11,8 +11,10 @@
   min-width: 280px;
 }
 .contact-form h2 {
-  color: #217040;
-  margin-bottom: 20px;
+  font-size: 32px;
+    margin-bottom: 15px;
+    color: #91c851;
+    font-weight: 700 !important;
 }
 .contact-form form {
   display: flex;

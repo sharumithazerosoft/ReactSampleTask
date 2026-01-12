@@ -12,7 +12,9 @@
 
 .about-text h2 {
   font-size: 32px;
-  margin-bottom: 15px;
+    margin-bottom: 15px;
+    color: #91c851;
+    font-weight: 700 !important;
 }
 
 .about-text p {
