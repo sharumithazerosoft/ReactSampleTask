@@ -85,7 +85,7 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
     if (!validate()) return;
 
     try {
-      // let url = 'http://localhost/Sharumitha/react/user-api/register.php';
+     //  let url = 'http://localhost/Sharumitha/react/user-api/register.php';
      let url='https://zerosoft.in/reactsampletask/user-api/update_user.php';
       let payload = {
         name: formData.name,
@@ -97,8 +97,8 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
         payload.password = formData.password;
       } else {
         payload.id = editingUser.id;
-       // url = 'http://localhost/Sharumitha/react/user-api/update_user.php';
-         url='https://zerosoft.in/reactsampletask/user-api/update_user.php';
+      //  url = 'http://localhost/Sharumitha/react/user-api/update_user.php';
+      url='https://zerosoft.in/reactsampletask/user-api/update_user.php';
       }
 
       const response = await fetch(url, {

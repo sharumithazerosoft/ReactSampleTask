@@ -31,3 +31,26 @@ h1 {
     max-width:320px;
   }
 }
+
+/* Banner */
+.banner {
+  background: #217040; /* blue banner */
+  color: #fff;
+  text-align: center;
+  padding: 60px 20px;
+}
+.banner h1 {
+  font-size: 36px;
+  margin: 0;
+}
+.banner p {
+  margin-top: 10px;
+  font-size: 16px;
+}
+.banner a {
+  color: #fff;
+  text-decoration: underline;
+}
+.banner a:hover{
+    text-decoration:none;
+}

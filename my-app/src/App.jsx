@@ -7,6 +7,8 @@ import Dashboard from "./component/Dashboard";
 import Header from "./component/Header";
 import Footer from "./component/Footer";
 import ProtectedRoute from "./component/ProtectedRoute";
+import About from "./component/About";
+import Contact from "./component/Contact";
 import './App.css';
 
 function App() {
@@ -15,8 +17,12 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegistrationForm />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+
         <Route
           path="/dashboard"
           element={
