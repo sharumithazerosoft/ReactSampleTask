@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './RegistrationForm.css';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 
 function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
   const navigate = useNavigate(); 
@@ -11,9 +13,6 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
     password: '',
     confirmPassword: ''
   });
-
-  const [message, setMessage] = useState("");       // <-- New state for message
-  const [messageType, setMessageType] = useState(""); // success or error
 
   useEffect(() => {
     if (editingUser) {
@@ -33,8 +32,6 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
         confirmPassword: ''
       });
     }
-    setMessage(""); // Clear message when editingUser changes
-    setMessageType("");
   }, [editingUser]);
 
   const handleChange = (e) => {
@@ -46,37 +43,36 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
     const { name, email, mobile, password, confirmPassword } = formData;
 
     if (!name.trim()) {
-      setMessage("Please enter your full name.");
-      setMessageType("error");
+      toast.error("Please enter your full name.", { position: "top-right", autoClose: 3000 });
+      return false;
+    }
+
+    if (!email.trim()) {
+      toast.error("Please enter your email.", { position: "top-right", autoClose: 3000 });
       return false;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setMessage("Please enter a valid email address.");
-      setMessageType("error");
+      toast.error("Please enter a valid email address.", { position: "top-right", autoClose: 3000 });
       return false;
     }
 
     if (!/^\d{10,15}$/.test(mobile)) {
-      setMessage("Please enter a valid mobile number (10 to 15 digits).");
-      setMessageType("error");
+      toast.error("Please enter a valid mobile number (10 to 15 digits).", { position: "top-right", autoClose: 3000 });
       return false;
     }
 
     if (!editingUser) {
       if (password.length < 6) {
-        setMessage("Password should be at least 6 characters.");
-        setMessageType("error");
+        toast.error("Password should be at least 6 characters.", { position: "top-right", autoClose: 3000 });
         return false;
       }
       if (password !== confirmPassword) {
-        setMessage("Passwords do not match.");
-        setMessageType("error");
+        toast.error("Passwords do not match.", { position: "top-right", autoClose: 3000 });
         return false;
       }
     }
 
-    setMessage(""); 
     return true;
   };
 
@@ -85,9 +81,15 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
     if (!validate()) return;
 
     try {
-     //  let url = 'http://localhost/Sharumitha/react/user-api/register.php';
-     let url='https://zerosoft.in/reactsampletask/user-api/update_user.php';
-      let payload = {
+      let url = editingUser
+        ? 'https://zerosoft.in/reactsampletask/user-api/update_user.php'
+        : 'https://zerosoft.in/reactsampletask/user-api/register.php';
+
+        //  let url = editingUser
+        // ? 'http://localhost/Sharumitha/react/user-api/update_user.php'
+        // : 'http://localhost/Sharumitha/react/user-api/register.php';
+
+      const payload = {
         name: formData.name,
         email: formData.email,
         mobile: formData.mobile
@@ -97,8 +99,6 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
         payload.password = formData.password;
       } else {
         payload.id = editingUser.id;
-      //  url = 'http://localhost/Sharumitha/react/user-api/update_user.php';
-      url='https://zerosoft.in/reactsampletask/user-api/update_user.php';
       }
 
       const response = await fetch(url, {
@@ -110,8 +110,10 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
       const result = await response.json();
 
       if (result.status === 'success') {
-        setMessage(editingUser ? "User updated successfully!" : "Registration successful!");
-        setMessageType("success");
+        toast.success(
+          editingUser ? "User updated successfully!" : "Registration successful!",
+          { position: "top-right", autoClose: 2000 }
+        );
 
         setFormData({
           name: '',
@@ -125,16 +127,13 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
         if (onUserUpdated) onUserUpdated();
 
         if (!editingUser) {
-          // Redirect after short delay to show success message
-          setTimeout(() => navigate('/login'), 1000);
+          setTimeout(() => navigate('/login'), 2000);
         }
       } else {
-        setMessage("Error: " + result.message);
-        setMessageType("error");
+        toast.error("Error: " + result.message, { position: "top-right", autoClose: 3000 });
       }
     } catch (error) {
-      setMessage("Network error: " + error.message);
-      setMessageType("error");
+      toast.error("Network error: " + error.message, { position: "top-right", autoClose: 3000 });
     }
   };
 
@@ -144,26 +143,17 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
 
   return (
     <div className="container-fluid login-container">
+      <ToastContainer /> {/* Toast container */}
+
       <div className="row align-items-center min-vh-100 login-box">
         <div className="col-12 col-lg-6 right-section">
           <div className="login-card bg-white rounded shadow-lg mx-auto">
             <div className="card-body p-4 p-md-5">
-              
+
               <h2 className="fw-bold mb-2">{editingUser ? 'Update Profile' : 'Register Now!'}</h2>
               <p className="text-muted mb-4">
                 {editingUser ? 'Update your profile details' : 'Create your account to get started'}
               </p>
-
-              {/* Display message on page */}
-              {message && (
-                <div
-                  className={`mb-3 p-2 rounded ${
-                    messageType === "success" ? "success" : "failed"
-                  }`}
-                >
-                  {message}
-                </div>
-              )}
 
               <form onSubmit={handleSubmit} autoComplete="off">
                 <div className="mb-3">
@@ -175,20 +165,18 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
                     placeholder="Enter your full name"
                     value={formData.name}
                     onChange={handleChange}
-                    required
                   />
                 </div>
 
                 <div className="mb-3">
                   <label className="form-label fw-semibold">Email</label>
                   <input
-                    type="email"
+                    type="text" // Use text to handle custom toast validation
                     name="email"
                     className="form-control form-input"
                     placeholder="email@gmail.com"
                     value={formData.email}
                     onChange={handleChange}
-                    required
                   />
                 </div>
 
@@ -201,7 +189,6 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
                     placeholder="Digits only, e.g. 9876543210"
                     value={formData.mobile}
                     onChange={handleChange}
-                    required
                   />
                 </div>
 
@@ -216,7 +203,6 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
                         placeholder="Enter password (at least 6 characters)"
                         value={formData.password}
                         onChange={handleChange}
-                        required
                       />
                     </div>
 
@@ -229,7 +215,6 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
                         placeholder="Confirm your password"
                         value={formData.confirmPassword}
                         onChange={handleChange}
-                        required
                       />
                     </div>
                   </>
@@ -245,7 +230,7 @@ function RegistrationForm({ editingUser, setEditingUser, onUserUpdated }) {
                   {editingUser ? 'Back to dashboard' : 'Already have an account?'}
                 </a>
                 <span 
-                  className="text-primary text-decoration-none fw-semibold small"
+                  className="text-primary fw-semibold small"
                   style={{ cursor: "pointer" }}
                   onClick={goToLogin}
                 >

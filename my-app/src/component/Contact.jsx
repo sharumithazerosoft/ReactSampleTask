@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; 
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import "./Contact.css";
 
 const Contact = () => {
@@ -10,49 +12,53 @@ const Contact = () => {
     message: ""
   });
 
-  const [errors, setErrors] = useState({});
-  const [statusMessage, setStatusMessage] = useState("");
-  const [statusType, setStatusType] = useState("");
-
-  const validate = () => {
-    let newErrors = {};
-
-    if (!/^[0-9]{8,15}$/.test(formData.phone)) {
-      newErrors.phone = "Enter a valid phone number (8–15 digits)";
-    }
-
-    if (
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
-    ) {
-      newErrors.email = "Enter a valid email address";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
 
-    setErrors({
-      ...errors,
-      [e.target.name]: ""
-    });
+  const validate = () => {
+    const { name, phone, email, message } = formData;
+
+    if (!name.trim()) {
+      toast.error("Name is required");
+      return false;
+    }
+
+    if (!phone.trim()) {
+      toast.error("Phone number is required");
+      return false;
+    } else if (!/^[0-9]{8,15}$/.test(phone)) {
+      toast.error("Enter a valid phone number (8–15 digits)");
+      return false;
+    }
+
+    if (!email.trim()) {
+      toast.error("Email is required");
+      return false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error("Enter a valid email address");
+      return false;
+    }
+
+    if (!message.trim()) {
+      toast.error("Message is required");
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatusMessage("");
-    setStatusType("");
     if (!validate()) return;
 
     try {
       const response = await fetch(
-       // "http://localhost/Sharumitha/react/user-api/contact.php",
-        "https://zerosoft.in/reactsampletask/user-api/contact.php",
+        //"http://localhost/Sharumitha/react/user-api/contact.php",
+         "https://zerosoft.in/reactsampletask/user-api/contact.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -63,23 +69,21 @@ const Contact = () => {
       const result = await response.json();
 
       if (result.status === "success") {
-        setStatusType("success");
-        setStatusMessage("Message sent successfully!");
+        toast.success("Message sent successfully!");
         setFormData({ name: "", phone: "", email: "", message: "" });
-        setErrors({});
       } else {
-        setStatusType("error");
-        setStatusMessage(result.message || "Failed to send message");
+        toast.error(result.message || "Failed to send message");
       }
     } catch (error) {
       console.error(error);
-      setStatusType("error");
-      setStatusMessage("Server error. Please try again later.");
+      toast.error("Server error. Please try again later.");
     }
   };
 
   return (
     <>
+      <ToastContainer position="top-right" autoClose={3000} />
+
       <section className="banner">
         <div className="banner-content">
           <h1>Contact Us</h1>
@@ -91,8 +95,6 @@ const Contact = () => {
 
       <section className="contact-section wrapper">
         <div className="contact-container">
-
-         
           <div className="contact-form">
             <h2>Send Us a Message</h2>
 
@@ -101,7 +103,6 @@ const Contact = () => {
                 type="text"
                 name="name"
                 placeholder="Your Name"
-                required
                 className="form-control"
                 value={formData.name}
                 onChange={handleChange}
@@ -115,41 +116,29 @@ const Contact = () => {
                 value={formData.phone}
                 onChange={handleChange}
               />
-              {errors.phone && (
-                <span className="error-text">{errors.phone}</span>
-              )}
 
               <input
-                type="email"
+                type="text"
                 name="email"
                 placeholder="Your Email"
                 className="form-control"
                 value={formData.email}
                 onChange={handleChange}
               />
-              {errors.email && (
-                <span className="error-text">{errors.email}</span>
-              )}
 
               <textarea
                 name="message"
                 placeholder="Your Message"
-                required
                 className="form-control"
                 value={formData.message}
                 onChange={handleChange}
               />
 
               <button type="submit">Send Message</button>
-
-              {statusMessage && (
-                <p className={`form-message ${statusType}`}>
-                  {statusMessage}
-                </p>
-              )}
             </form>
           </div>
- <div className="contact-map">
+
+          <div className="contact-map">
             <iframe
               src="https://www.google.com/maps?q=12/A,+Romania+City+New+World+Journey,+UK&output=embed"
               width="100%"
@@ -160,7 +149,6 @@ const Contact = () => {
               title="Google Map"
             />
           </div>
-
         </div>
       </section>
     </>
