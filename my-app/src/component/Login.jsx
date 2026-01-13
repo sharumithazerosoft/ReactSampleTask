@@ -13,7 +13,6 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const response = await fetch(
          "https://zerosoft.in/reactsampletask/user-api/login.php",
@@ -24,15 +23,11 @@ const Login = () => {
           body: JSON.stringify({ email, password }),
         }
       );
-
       const result = await response.json();
-
       if (result.status === "success") {
         setMessage("Login successful!");
         setMessageType("success");
-        // Save login state
         localStorage.setItem("isLoggedIn", "true");
-        // Redirect after a short delay
         setTimeout(() => {
           navigate("/dashboard");
         }, 1000);

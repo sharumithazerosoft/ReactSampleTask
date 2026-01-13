@@ -1,9 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import galleryData from "../data/galleryData.json";
 import "./Gallery.css";
 
 const Gallery = () => {
+  const [galleryData, setGalleryData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.BASE_URL}data/gallerydata.json`)
+      .then((res) => res.json())
+      .then((data) => {
+        setGalleryData(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching gallery data:", error);
+        setLoading(false);
+      });
+  }, []);
+
   // Split gallery into rows of 3
   const chunkArray = (arr, size) => {
     const result = [];
@@ -12,6 +27,10 @@ const Gallery = () => {
     }
     return result;
   };
+
+  if (loading) {
+    return <p className="loading">Loading gallery...</p>;
+  }
 
   const galleryRows = chunkArray(galleryData, 3);
 
@@ -46,11 +65,9 @@ const Gallery = () => {
               ))}
             </div>
           ))}
-
           <div className="clear"></div>
         </div>
       </section>
-
     </>
   );
 };
